@@ -1,4 +1,4 @@
-package com.trick.backend.model.pojo;
+package com.trick.backend.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class UserVO {
 
     private Integer id;
     private String openId;

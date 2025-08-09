@@ -17,4 +17,5 @@ public interface ChargingPileService {
 
     void updateChargingPile(Integer id, ChargingPileAddAndUpdateDTO chargingUpdatePileDTO);
 
+    void deleteChargingPile(Integer id);
 }

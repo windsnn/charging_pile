@@ -28,6 +28,12 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteCharging">
+        delete
+        from charging_pile
+        where id = #{id}
+    </delete>
+
 
     <select id="getAllChargingPiles" resultType="com.trick.backend.model.pojo.ChargingPile">
         select id,

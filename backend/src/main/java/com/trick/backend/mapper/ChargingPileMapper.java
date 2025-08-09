@@ -21,4 +21,7 @@ public interface ChargingPileMapper {
 
     //根据ID更新充电桩数据
     void updateChargingPile(ChargingPileAddAndUpdateDTO chargingUpdatePileDTO);
+
+    //根据ID删除充电桩数据
+    void deleteCharging(Integer id);
 }

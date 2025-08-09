@@ -39,4 +39,10 @@ public class ChargingPileController {
         return Result.success();
     }
 
+    @DeleteMapping("/{id}")
+    Result<?> deleteChargingPile(@PathVariable Integer id) {
+        chargingPileService.deleteChargingPile(id);
+        return Result.success();
+    }
+
 }

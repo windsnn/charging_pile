@@ -64,4 +64,10 @@ public class ChargingPileServiceImpl implements ChargingPileService {
 
         chargingPileMapper.updateChargingPile(chargingUpdatePileDTO);
     }
+
+    //删除充电桩
+    @Override
+    public void deleteChargingPile(Integer id) {
+        chargingPileMapper.deleteCharging(id);
+    }
 }
