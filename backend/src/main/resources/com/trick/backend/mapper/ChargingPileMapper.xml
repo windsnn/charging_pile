@@ -22,8 +22,7 @@
             <if test="locationDesc != null and locationDesc != '' ">location_desc = #{locationDesc},</if>
             <if test="latitude != null">latitude = #{latitude},</if>
             <if test="longitude != null">longitude = #{longitude},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            update_time = #{updateTime}
         </set>
         where id = #{id}
     </update>

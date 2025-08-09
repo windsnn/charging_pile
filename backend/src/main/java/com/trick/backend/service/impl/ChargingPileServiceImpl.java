@@ -59,8 +59,7 @@ public class ChargingPileServiceImpl implements ChargingPileService {
     @Override
     public void updateChargingPile(Integer id, ChargingPileAddAndUpdateDTO chargingUpdatePileDTO) {
         chargingUpdatePileDTO.setId(id);
-        LocalDateTime now = LocalDateTime.now();
-        chargingUpdatePileDTO.setUpdateTime(now);
+        chargingUpdatePileDTO.setUpdateTime(LocalDateTime.now());
 
         chargingPileMapper.updateChargingPile(chargingUpdatePileDTO);
     }
