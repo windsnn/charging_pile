@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.mapper.UserMapper;
+import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
 import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
@@ -41,5 +42,17 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, userVO);
 
         return userVO;
+    }
+
+    //根据openId查询用户ID
+    @Override
+    public Integer getUserByOpenid(String openid) {
+        return userMapper.getUserByOpenId(openid);
+    }
+
+    //微信用户注册
+    @Override
+    public Integer addUser(UserAddAndUpdateDTO dto) {
+        return userMapper.addUser(dto);
     }
 }

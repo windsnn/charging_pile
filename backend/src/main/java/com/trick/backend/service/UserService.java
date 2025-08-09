@@ -1,6 +1,7 @@
 package com.trick.backend.service;
 
 import com.trick.backend.common.result.PageResult;
+import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
 import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
@@ -11,4 +12,11 @@ public interface UserService {
 
     //根据ID查询
     UserVO getUserById(Integer id);
+
+    //根据openId查询用户ID
+    Integer getUserByOpenid(String openid);
+
+    //进行微信用户注册,返回ID
+    Integer addUser(UserAddAndUpdateDTO dto);
+
 }

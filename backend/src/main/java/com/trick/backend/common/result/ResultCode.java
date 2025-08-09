@@ -9,7 +9,8 @@ public enum ResultCode {
     ERROR(500, "服务器异常"),
     UNAUTHORIZED(401, "未授权"),
     FORBIDDEN(403, "禁止访问"),
-    NOT_FOUND(404, "资源不存在");
+    NOT_FOUND(404, "资源不存在"),
+    WX_LOGIN_FAILED(1001, "微信登录失败");
 
     private final Integer code;
     private final String msg;

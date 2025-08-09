@@ -12,7 +12,7 @@ import java.util.List;
  * OSS SDK 基础使用示例
  * 展示如何初始化 OSS 客户端并列出所有 Bucket
  */
-public class AliyunOssUtils {
+public class AliyunOssUtil {
     public void test() throws Exception {
         // 创建 ClientBuilderConfiguration 实例，用于配置 OSS 客户端参数
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
