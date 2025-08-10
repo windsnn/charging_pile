@@ -23,4 +23,6 @@ public class ChargingPileVO {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
+    private Double roadDistance; //道路距离
+
 }

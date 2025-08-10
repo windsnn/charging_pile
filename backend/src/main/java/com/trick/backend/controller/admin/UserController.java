@@ -8,6 +8,7 @@ import com.trick.backend.model.pojo.ChargingPile;
 import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
 import com.trick.backend.service.UserService;
+import com.trick.backend.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

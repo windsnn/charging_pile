@@ -5,6 +5,7 @@ import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
 import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
+import com.trick.backend.model.vo.WxUserProfileVO;
 
 public interface UserService {
     //分页条件查询
@@ -13,10 +14,14 @@ public interface UserService {
     //根据ID查询
     UserVO getUserById(Integer id);
 
+    WxUserProfileVO getUserProfileById(Integer id);
+
     //根据openId查询用户ID
     Integer getUserByOpenid(String openid);
 
     //进行微信用户注册,返回ID
     Integer addUser(UserAddAndUpdateDTO dto);
 
+    //用户的数据更新
+    void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO);
 }

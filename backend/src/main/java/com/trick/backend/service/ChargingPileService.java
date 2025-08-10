@@ -7,6 +7,8 @@ import com.trick.backend.model.pojo.ChargingPile;
 import com.trick.backend.model.vo.ChargingPileVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 
 public interface ChargingPileService {
     PageResult<ChargingPile> getChargingPilesByPage(ChargingPileQueryDTO chargingPileQueryDTO);
@@ -18,4 +20,6 @@ public interface ChargingPileService {
     void updateChargingPile(Integer id, ChargingPileAddAndUpdateDTO chargingUpdatePileDTO);
 
     void deleteChargingPile(Integer id);
+
+    List<ChargingPileVO> nearbyByRoadDistance(Double latitude, Double longitude);
 }

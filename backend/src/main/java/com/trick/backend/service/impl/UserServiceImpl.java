@@ -8,6 +8,7 @@ import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
 import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
+import com.trick.backend.model.vo.WxUserProfileVO;
 import com.trick.backend.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,29 @@ public class UserServiceImpl implements UserService {
         return new PageResult<>(total, records);
     }
 
-    //根据ID查询
+    //根据ID查询User信息
+    private User getUser(Integer id) {
+        return userMapper.getUserById(id);
+    }
+
+    //返回管理系统User信息
     @Override
     public UserVO getUserById(Integer id) {
         UserVO userVO = new UserVO();
-        User user = userMapper.getUserById(id);
+        User user = getUser(id);
 
         BeanUtils.copyProperties(user, userVO);
-
         return userVO;
+    }
+
+    //返回微信个人中心User信息
+    @Override
+    public WxUserProfileVO getUserProfileById(Integer id) {
+        WxUserProfileVO wxUserProfileVO = new WxUserProfileVO();
+        User user = getUser(id);
+
+        BeanUtils.copyProperties(user, wxUserProfileVO);
+        return wxUserProfileVO;
     }
 
     //根据openId查询用户ID
@@ -54,5 +69,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer addUser(UserAddAndUpdateDTO dto) {
         return userMapper.addUser(dto);
+    }
+
+    //微信用户数据更新
+    @Override
+    public void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO) {
+        userMapper.updateUser(userAddAndUpdateDTO);
     }
 }

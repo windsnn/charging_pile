@@ -9,6 +9,22 @@
         values (#{openid}, #{createTime}, #{updateTime})
     </insert>
 
+    <update id="updateUser">
+        update user
+        <set>
+            <if test="nickname != null and nickname != '' ">
+                nickname = #{nickname},
+            </if>
+            <if test="avatarUrl != null and avatarUrl != '' ">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="phone != null and phone != '' ">
+                phone = #{phone}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
     <select id="getAllUsers" resultType="com.trick.backend.model.pojo.User">
         select id, openid, nickname, avatar_url, balance, phone, create_time, update_time from user
         <where>

@@ -35,6 +35,8 @@ public class LoginServiceImpl implements LoginService {
     private JwtUtil jwtUtil;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // 如果有 Redis，可以注入缓存 session_key
     // @Autowired
@@ -51,7 +53,6 @@ public class LoginServiceImpl implements LoginService {
         log.info("微信登录返回: {}", response);
         log.info("code: {}", code);
 
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(response);
 
         if (jsonNode.has("errcode")) {
