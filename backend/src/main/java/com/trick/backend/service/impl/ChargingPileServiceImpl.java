@@ -134,9 +134,4 @@ public class ChargingPileServiceImpl implements ChargingPileService {
                 .collect(Collectors.toList());
     }
 
-    //根据充电桩编号查询是否存在(返回充电桩ID）
-    @Override
-    public Integer getChargingPileByPileId(String pileId) {
-        return chargingPileMapper.getIdByPileId(pileId);
-    }
 }

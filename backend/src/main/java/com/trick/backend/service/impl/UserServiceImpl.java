@@ -13,8 +13,8 @@ import com.trick.backend.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -80,17 +80,14 @@ public class UserServiceImpl implements UserService {
 
     //获取个人余额
     @Override
-    public Double getWallet(Integer id) {
+    public BigDecimal getWallet(Integer id) {
         return userMapper.getWallet(id);
     }
 
     //更新账户余额
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void addBalance(Integer id, Double amount) {
-        Double balance = userMapper.getWallet(id);
-        balance += amount;
-        userMapper.updateBalance(id, balance);
+    public void addBalance(Integer id, BigDecimal amount) {
+        userMapper.addBalance(id, amount);
     }
 
 }

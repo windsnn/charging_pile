@@ -22,7 +22,7 @@
             <if test="locationDesc != null and locationDesc != '' ">location_desc = #{locationDesc},</if>
             <if test="latitude != null">latitude = #{latitude},</if>
             <if test="longitude != null">longitude = #{longitude},</if>
-            update_time = #{updateTime}
+            <if test="updateTime != null">update_time = #{updateTime}</if>
         </set>
         where id = #{id}
     </update>
@@ -93,12 +93,6 @@
                       POINT(longitude, latitude)
               ) &lt;= #{maxStraightDistanceInMeters}
         limit #{maxPiles}
-    </select>
-
-    <select id="getIdByPileId" resultType="java.lang.Integer">
-        select id
-        from charging_pile
-        where pile_no = #{pileNo}
     </select>
 
 </mapper>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,7 +17,7 @@ public class ChargingPileAddAndUpdateDTO {
     private Integer type;
     private Integer status;
     private Double powerRate;
-    private Double pricePerKwh;
+    private BigDecimal pricePerKwh;
     private String locationDesc;
     private Double latitude;
     private Double longitude;

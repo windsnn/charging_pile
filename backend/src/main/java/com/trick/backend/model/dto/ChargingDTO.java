@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChargingDTO {
-    String pileId;
-    String orderId;
+    Integer pileId; //充电桩ID
+    String orderNo;
 }

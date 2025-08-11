@@ -7,6 +7,8 @@ import com.trick.backend.model.pojo.User;
 import com.trick.backend.model.vo.UserVO;
 import com.trick.backend.model.vo.WxUserProfileVO;
 
+import java.math.BigDecimal;
+
 public interface UserService {
     //分页条件查询
     PageResult<User> getUsersByPage(UserQueryDTO queryDTO);
@@ -25,7 +27,7 @@ public interface UserService {
     //用户的数据更新
     void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO);
 
-    Double getWallet(Integer id);
+    BigDecimal getWallet(Integer id);
 
-    void addBalance(Integer id, Double amount);
+    void addBalance(Integer id, BigDecimal amount);
 }

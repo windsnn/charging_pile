@@ -10,15 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserVO {
+public class ChargingOrderVO {
 
     private Integer id;
-    private String openId;
-    private String nickname;
-    private String avatarUrl;
-    private BigDecimal balance;
-    private String phone;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private String orderNo;
+    private Integer pileId;
+    private LocalDateTime startTime;
+    private Integer status;
 
 }

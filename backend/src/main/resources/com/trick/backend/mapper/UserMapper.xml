@@ -25,10 +25,16 @@
         where id = #{id}
     </update>
 
-    <update id="updateBalance">
+    <update id="addBalance">
         update user
-        set balance = #{balance}
+        set balance = balance + #{amount}
         where id = #{id}
+    </update>
+
+    <update id="decreaseBalance">
+        update user
+        set balance = balance - #{actualDeduction}
+        where id = #{userId}
     </update>
 
     <select id="getAllUsers" resultType="com.trick.backend.model.pojo.User">
@@ -63,7 +69,7 @@
         where openid = #{openid}
     </select>
 
-    <select id="getWallet" resultType="java.lang.Double">
+    <select id="getWallet" resultType="java.math.BigDecimal">
         select balance
         from user
         where id = #{id}

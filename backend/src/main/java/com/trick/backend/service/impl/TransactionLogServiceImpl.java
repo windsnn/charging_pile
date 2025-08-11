@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,9 +40,9 @@ public class TransactionLogServiceImpl implements TransactionLogService {
     //目前为模拟充值
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void recharge(Integer id, Double amount) {
+    public void recharge(Integer id, BigDecimal amount) {
         // 1. 校验参数
-        if (id == null || amount == null || amount <= 0) {
+        if (id == null || amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BusinessException(422, "充值金额必须大于0");
         }
 
@@ -61,8 +62,6 @@ public class TransactionLogServiceImpl implements TransactionLogService {
         logT.setType(1); // 1-充值
         logT.setStatus(1); // 1-成功
         logT.setDescription("模拟充值");
-        logT.setCreateTime(now);
-        logT.setUpdateTime(now);
         transactionLogMapper.addLogT(logT);
     }
 

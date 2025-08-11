@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 
 @Data
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class WxUserProfileVO {
 
     private String nickname;
     private String avatarUrl;
-    private Double balance;
+    private BigDecimal balance;
     private String phone;
 
 }

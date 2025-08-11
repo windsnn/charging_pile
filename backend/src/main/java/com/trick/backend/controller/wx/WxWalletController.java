@@ -12,7 +12,10 @@ import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/wx/wallet")
@@ -23,11 +26,16 @@ public class WxWalletController {
     private UserService userService;
 
     @GetMapping
-    public Result<Double> getWallet() {
+    public Result<Map<String, BigDecimal>> getWallet() {
         // token获取id
         // Integer id = UserContext.getUserId();
         Integer id = 20;
-        return Result.success(userService.getWallet(id));
+        BigDecimal balance = userService.getWallet(id);
+
+        Map<String, BigDecimal> map = new HashMap<>();
+        map.put("balance", balance);
+
+        return Result.success(map);
     }
 
     @GetMapping("/transactions")
@@ -36,16 +44,16 @@ public class WxWalletController {
             @RequestParam(defaultValue = "10") Integer pageSize) {
         // token获取id
         // Integer id = UserContext.getUserId();
-        Integer id = 10;
+        Integer id = 20;
         return Result.success(transactionLogService.getPagedTransactions(id, pageNum, pageSize));
     }
 
     @PostMapping("/recharge")
-    public Result<?> recharge(@RequestBody RechargeDTO rechageDTO) {
+    public Result<?> recharge(@RequestBody RechargeDTO rechargeDTO) {
         // token获取id
         // Integer id = UserContext.getUserId();
-        Integer id = 10;
-        transactionLogService.recharge(id, rechageDTO.getAmount());
+        Integer id = 20;
+        transactionLogService.recharge(id, rechargeDTO.getAmount());
         return Result.success();
     }
 

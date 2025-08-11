@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +16,7 @@ public class User {
     private String openid;
     private String nickname;
     private String avatarUrl;
-    private Double balance;
+    private BigDecimal balance;
     private String phone;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

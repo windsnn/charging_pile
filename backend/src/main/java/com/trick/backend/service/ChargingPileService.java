@@ -23,5 +23,4 @@ public interface ChargingPileService {
 
     List<ChargingPileVO> nearbyByRoadDistance(Double latitude, Double longitude);
 
-    Integer getChargingPileByPileId(String pileId);
 }
