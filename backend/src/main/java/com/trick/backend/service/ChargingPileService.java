@@ -22,4 +22,6 @@ public interface ChargingPileService {
     void deleteChargingPile(Integer id);
 
     List<ChargingPileVO> nearbyByRoadDistance(Double latitude, Double longitude);
+
+    Integer getChargingPileByPileId(String pileId);
 }

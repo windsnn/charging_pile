@@ -95,4 +95,10 @@
         limit #{maxPiles}
     </select>
 
+    <select id="getIdByPileId" resultType="java.lang.Integer">
+        select id
+        from charging_pile
+        where pile_no = #{pileNo}
+    </select>
+
 </mapper>

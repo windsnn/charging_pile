@@ -25,6 +25,12 @@
         where id = #{id}
     </update>
 
+    <update id="updateBalance">
+        update user
+        set balance = #{balance}
+        where id = #{id}
+    </update>
+
     <select id="getAllUsers" resultType="com.trick.backend.model.pojo.User">
         select id, openid, nickname, avatar_url, balance, phone, create_time, update_time from user
         <where>
@@ -51,10 +57,16 @@
         where id = #{id}
     </select>
 
-    <select id="getUserByOpenId" resultType="integer">
+    <select id="getUserByOpenId" resultType="java.lang.Integer">
         select id
         from user
         where openid = #{openid}
+    </select>
+
+    <select id="getWallet" resultType="java.lang.Double">
+        select balance
+        from user
+        where id = #{id}
     </select>
 
 </mapper>

@@ -58,14 +58,14 @@ public class LoginServiceImpl implements LoginService {
         if (jsonNode.has("errcode")) {
             String errMsg = jsonNode.get("errmsg").asText();
             log.error("微信登录失败: {}", errMsg);
-            throw new BusinessException(ResultCode.WX_LOGIN_FAILED.getCode(), "微信登录失败");
+            throw new BusinessException(1001, "微信登录失败");
         }
 
         String openid = jsonNode.get("openid").asText(null);
         String sessionKey = jsonNode.get("session_key").asText(null);
 
         if (openid == null) {
-            throw new BusinessException(ResultCode.WX_LOGIN_FAILED.getCode(), "微信登录失败：未获取到openid");
+            throw new BusinessException(1001, "微信登录失败：未获取到openid");
         }
 
         // 2. 创建或更新用户，并生成 token

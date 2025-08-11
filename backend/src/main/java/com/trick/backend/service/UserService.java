@@ -24,4 +24,8 @@ public interface UserService {
 
     //用户的数据更新
     void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO);
+
+    Double getWallet(Integer id);
+
+    void addBalance(Integer id, Double amount);
 }

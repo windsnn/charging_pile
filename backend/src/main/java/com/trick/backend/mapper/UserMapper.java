@@ -25,4 +25,10 @@ public interface UserMapper {
     //更新用户数据
     //目前随意设置手机号
     void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO);
+
+    //获取个人钱包余额
+    Double getWallet(Integer id);
+
+    //更新个人钱包余额
+    void updateBalance(Integer id, Double balance);
 }

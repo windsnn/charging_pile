@@ -27,4 +27,7 @@ public interface ChargingPileMapper {
 
     //获取距离10公里内的充电桩，最多10个
     List<ChargingPile> getNearbyByStraightDistance(Double latitude, Double longitude, Double maxStraightDistanceInMeters, Integer maxPiles);
+
+    //获取充电桩Id根据充电桩编号
+    Integer getIdByPileId(String pileId);
 }
