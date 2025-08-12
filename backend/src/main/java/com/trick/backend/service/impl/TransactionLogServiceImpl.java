@@ -54,7 +54,6 @@ public class TransactionLogServiceImpl implements TransactionLogService {
 
         // 4. 插入交易记录
         TransactionLog logT = new TransactionLog();
-        LocalDateTime now = LocalDateTime.now();
         logT.setTransactionNo(transactionNo);
         logT.setUserId(id);
         logT.setOrderId(null);

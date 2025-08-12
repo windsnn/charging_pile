@@ -5,7 +5,6 @@ import com.trick.backend.model.dto.ChargingPileAddAndUpdateDTO;
 import com.trick.backend.model.dto.ChargingPileQueryDTO;
 import com.trick.backend.model.pojo.ChargingPile;
 import com.trick.backend.model.vo.ChargingPileVO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

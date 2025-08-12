@@ -14,5 +14,6 @@ public class FaultReportQueryDTO {
 
     private String pileNo;//充电桩编号
     private Integer status;
+    private Integer userId;
 
 }

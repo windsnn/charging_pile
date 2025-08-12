@@ -3,6 +3,7 @@ package com.trick.backend.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.Insert;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FaultReportUpdateDTO {
 
-    private int id;
+    private Integer id;
     private Integer status;
     private LocalDateTime updateTime;
 

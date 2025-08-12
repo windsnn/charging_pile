@@ -2,19 +2,15 @@ package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
-import com.trick.backend.mapper.TransactionLogMapper;
-import com.trick.backend.mapper.UserMapper;
 import com.trick.backend.model.dto.RechargeDTO;
 import com.trick.backend.model.pojo.TransactionLog;
 import com.trick.backend.service.TransactionLogService;
 import com.trick.backend.service.UserService;
-import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

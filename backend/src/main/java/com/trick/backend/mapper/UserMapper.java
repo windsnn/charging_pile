@@ -4,7 +4,6 @@ import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
 import com.trick.backend.model.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;

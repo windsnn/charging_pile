@@ -18,4 +18,10 @@ public class ChargingOrderVO {
     private LocalDateTime startTime;
     private Integer status;
 
+    private LocalDateTime endTime;
+    private Integer duration;
+    private BigDecimal powerConsumed;
+    private BigDecimal totalFee;
+    private Integer paymentMethod;
+
 }

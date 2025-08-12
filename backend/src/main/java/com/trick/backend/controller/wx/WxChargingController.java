@@ -2,9 +2,9 @@ package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.Result;
 import com.trick.backend.model.dto.ChargingDTO;
-import com.trick.backend.model.pojo.ChargingOrder;
 import com.trick.backend.model.vo.ChargingOrderVO;
 import com.trick.backend.service.ChargingOrderService;
+import com.trick.backend.service.ChargingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +16,8 @@ import java.util.Map;
 @RequestMapping("/wx/charging")
 public class WxChargingController {
     @Autowired
+    private ChargingService chargingService;
+    @Autowired
     private ChargingOrderService chargingOrderService;
 
 
@@ -24,7 +26,7 @@ public class WxChargingController {
         // token获取UserId
         // Integer UserId = UserContext.getUserId();
         Integer userId = 20;
-        String orderId = chargingOrderService.startCharging(userId, chargingDTO);
+        String orderId = chargingService.startCharging(userId, chargingDTO);
 
         Map<String, String> map = new HashMap<>();
         map.put("orderId", orderId);
@@ -37,7 +39,7 @@ public class WxChargingController {
         // token获取UserId
         // Integer UserId = UserContext.getUserId();
         Integer userId = 20;
-        String orderId = chargingOrderService.stopChargingByUser(userId, chargingDTO);
+        String orderId = chargingService.stopChargingByUser(userId, chargingDTO);
 
         Map<String, String> map = new HashMap<>();
         map.put("orderId", orderId);

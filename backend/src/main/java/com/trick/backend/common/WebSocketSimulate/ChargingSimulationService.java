@@ -1,6 +1,7 @@
 package com.trick.backend.common.WebSocketSimulate;
 
 import com.trick.backend.service.ChargingOrderService;
+import com.trick.backend.service.ChargingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -23,7 +24,7 @@ public class ChargingSimulationService {
     private WebSocketServer webSocketServer;
     @Lazy
     @Autowired
-    private ChargingOrderService chargingOrderService;
+    private ChargingService chargingService;
 
     /**
      * 开始一个异步的充电模拟任务
@@ -66,7 +67,7 @@ public class ChargingSimulationService {
 
                     // 触发自动停止流程
                     endMessage.put("status", "STOPPED");
-                    chargingOrderService.stopChargingDueToInsufficientBalance(userId, orderNo);
+                    chargingService.stopChargingDueToInsufficientBalance(userId, orderNo);
                     break; // 跳出循环
                 }
 

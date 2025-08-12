@@ -13,7 +13,7 @@ public interface ChargingPileMapper {
     //获取完整的数据，使用pageHelper进行分页
     List<ChargingPile> getAllChargingPiles(ChargingPileQueryDTO chargingPileQueryDTO);
 
-    //根据ID获取单个充电桩详情
+    //根据充电桩ID获取单个充电桩详情
     ChargingPile getChargingPileById(Integer id);
 
     //新增充电桩数据

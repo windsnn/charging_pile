@@ -17,4 +17,6 @@ public interface ChargingOrderMapper {
     void updateByOrderNo(ChargingOrder order);
 
     List<ChargingOrderVO> getOngoing(Integer userId);
+
+    List<ChargingOrderVO> getAllOrderByUserId(Integer userId);
 }
