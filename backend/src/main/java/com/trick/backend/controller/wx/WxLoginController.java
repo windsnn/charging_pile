@@ -19,7 +19,7 @@ public class WxLoginController {
         String token = loginService.loginUser(code);
 
         Map<String, String> params = new HashMap<>();
-        params.put("token", token);
+        params.put("User-Token", token);
 
         return Result.success(params);
     }

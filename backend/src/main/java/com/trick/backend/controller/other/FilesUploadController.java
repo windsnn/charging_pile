@@ -3,6 +3,7 @@ package com.trick.backend.controller.other;
 import com.trick.backend.common.exception.BusinessException;
 import com.trick.backend.common.result.Result;
 import com.trick.backend.common.utils.AliyunOssUtil;
+import com.trick.backend.common.utils.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/wx/files/upload")
-public class FilesUpload {
+public class FilesUploadController {
     @Autowired
     private AliyunOssUtil aliyunOssUtil;
 
@@ -27,9 +28,8 @@ public class FilesUpload {
             @RequestParam MultipartFile file,
             @RequestParam String type) {
 
-        // token获取UserId
-        // Integer UserId = UserContext.getUserId();
-        int userId = 20;
+        // token获取userId
+        int userId = (int) ThreadLocalUtil.getUserContext().get("id");
 
         if (file.isEmpty()) {
             throw new BusinessException("上传文件不能为空");

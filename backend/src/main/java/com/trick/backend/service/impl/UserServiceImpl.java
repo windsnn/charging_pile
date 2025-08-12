@@ -35,11 +35,6 @@ public class UserServiceImpl implements UserService {
         return new PageResult<>(total, records);
     }
 
-    //根据ID查询User信息
-    private User getUser(Integer id) {
-        return userMapper.getUserById(id);
-    }
-
     //返回管理系统User信息
     @Override
     public UserVO getUserById(Integer id) {
@@ -52,9 +47,9 @@ public class UserServiceImpl implements UserService {
 
     //返回微信个人中心User信息
     @Override
-    public WxUserProfileVO getUserProfileById(Integer id) {
+    public WxUserProfileVO getUserProfileById(Integer userId) {
         WxUserProfileVO wxUserProfileVO = new WxUserProfileVO();
-        User user = getUser(id);
+        User user = getUser(userId);
 
         BeanUtils.copyProperties(user, wxUserProfileVO);
         return wxUserProfileVO;
@@ -90,4 +85,11 @@ public class UserServiceImpl implements UserService {
         userMapper.addBalance(id, amount);
     }
 
+    //======================内部方法=============================
+
+    //根据ID查询User信息
+    private User getUser(Integer id) {
+        return userMapper.getUserById(id);
+    }
+    
 }

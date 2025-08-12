@@ -2,6 +2,7 @@ package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
+import com.trick.backend.common.utils.ThreadLocalUtil;
 import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.vo.ChargingOrderVO;
 import com.trick.backend.model.vo.WxUserProfileVO;
@@ -21,20 +22,18 @@ public class WxUserController {
     // 获取user信息
     public Result<WxUserProfileVO> getUserProfile() {
         //获取token id
-        // Integer id = UserContext.getUserId();
-        Integer id = 1;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
 
-        return Result.success(userService.getUserProfileById(id));
+        return Result.success(userService.getUserProfileById(userId));
     }
 
     //更新user信息
     @PutMapping
     public Result<?> updateUserProfile(@RequestBody UserAddAndUpdateDTO userAddAndUpdateDTO) {
         //获取token id
-        // Integer id = UserContext.getUserId();
-        Integer id = 20;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
 
-        userAddAndUpdateDTO.setId(id);
+        userAddAndUpdateDTO.setId(userId);
         userService.updateUser(userAddAndUpdateDTO);
         return Result.success();
     }

@@ -2,6 +2,7 @@ package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
+import com.trick.backend.common.utils.ThreadLocalUtil;
 import com.trick.backend.model.dto.RechargeDTO;
 import com.trick.backend.model.pojo.TransactionLog;
 import com.trick.backend.service.TransactionLogService;
@@ -24,9 +25,8 @@ public class WxWalletController {
     @GetMapping
     public Result<Map<String, BigDecimal>> getWallet() {
         // token获取id
-        // Integer id = UserContext.getUserId();
-        Integer id = 20;
-        BigDecimal balance = userService.getWallet(id);
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        BigDecimal balance = userService.getWallet(userId);
 
         Map<String, BigDecimal> map = new HashMap<>();
         map.put("balance", balance);
@@ -39,17 +39,17 @@ public class WxWalletController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         // token获取id
-        // Integer id = UserContext.getUserId();
-        Integer id = 20;
-        return Result.success(transactionLogService.getPagedTransactions(id, pageNum, pageSize));
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+
+        return Result.success(transactionLogService.getPagedTransactions(userId, pageNum, pageSize));
     }
 
     @PostMapping("/recharge")
     public Result<?> recharge(@RequestBody RechargeDTO rechargeDTO) {
         // token获取id
-        // Integer id = UserContext.getUserId();
-        Integer id = 20;
-        transactionLogService.recharge(id, rechargeDTO.getAmount());
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+
+        transactionLogService.recharge(userId, rechargeDTO.getAmount());
         return Result.success();
     }
 

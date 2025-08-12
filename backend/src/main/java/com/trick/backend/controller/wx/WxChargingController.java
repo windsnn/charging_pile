@@ -1,6 +1,7 @@
 package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.Result;
+import com.trick.backend.common.utils.ThreadLocalUtil;
 import com.trick.backend.model.dto.ChargingDTO;
 import com.trick.backend.model.vo.ChargingOrderVO;
 import com.trick.backend.service.ChargingOrderService;
@@ -24,8 +25,8 @@ public class WxChargingController {
     @PostMapping("/start")
     public Result<Map<String, String>> startCharging(@RequestBody ChargingDTO chargingDTO) {
         // token获取UserId
-        // Integer UserId = UserContext.getUserId();
-        Integer userId = 20;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+
         String orderId = chargingService.startCharging(userId, chargingDTO);
 
         Map<String, String> map = new HashMap<>();
@@ -37,8 +38,8 @@ public class WxChargingController {
     @PostMapping("/stop")
     public Result<Map<String, String>> stopCharging(@RequestBody ChargingDTO chargingDTO) {
         // token获取UserId
-        // Integer UserId = UserContext.getUserId();
-        Integer userId = 20;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+
         String orderId = chargingService.stopChargingByUser(userId, chargingDTO);
 
         Map<String, String> map = new HashMap<>();
@@ -50,8 +51,7 @@ public class WxChargingController {
     @GetMapping("/ongoing")
     public Result<List<ChargingOrderVO>> ongoingCharging() {
         // token获取UserId
-        // Integer UserId = UserContext.getUserId();
-        Integer userId = 20;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
 
         return Result.success(chargingOrderService.getOngoing(userId));
     }

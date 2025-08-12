@@ -16,7 +16,7 @@ public interface UserService {
     //根据ID查询
     UserVO getUserById(Integer id);
 
-    WxUserProfileVO getUserProfileById(Integer id);
+    WxUserProfileVO getUserProfileById(Integer userId);
 
     //根据openId查询用户ID
     Integer getUserByOpenid(String openid);
@@ -27,7 +27,7 @@ public interface UserService {
     //用户的数据更新
     void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO);
 
-    BigDecimal getWallet(Integer id);
+    BigDecimal getWallet(Integer userId);
 
     void addBalance(Integer id, BigDecimal amount);
 }

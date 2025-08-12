@@ -23,7 +23,7 @@ public class JwtUtil {
     }
 
     //解析token
-    public Map<String, Object> parseToken(String token) throws Exception {
+    public Map<String, Object> parseToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

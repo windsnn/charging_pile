@@ -2,6 +2,7 @@ package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
+import com.trick.backend.common.utils.ThreadLocalUtil;
 import com.trick.backend.model.vo.ChargingOrderVO;
 import com.trick.backend.service.ChargingOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,7 @@ public class WxChargingOrderController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         //获取token id
-        // Integer id = UserContext.getUserId();
-        Integer userId = 20;
+        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
 
         return Result.success(orderService.getPagedOrder(userId, pageNum, pageSize));
     }
