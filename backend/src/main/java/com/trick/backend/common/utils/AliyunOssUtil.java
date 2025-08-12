@@ -5,44 +5,104 @@ import com.aliyun.oss.common.auth.*;
 import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.trick.backend.common.exception.BusinessException;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
-/**
- * OSS SDK 基础使用示例
- * 展示如何初始化 OSS 客户端并列出所有 Bucket
- */
+@Slf4j
+@Component
 public class AliyunOssUtil {
-    public void test() throws Exception {
-        // 创建 ClientBuilderConfiguration 实例，用于配置 OSS 客户端参数
-        ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
-        // 设置签名算法版本为 V4
-        clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
-        // 设置使用 HTTPS 协议访问 OSS，保证传输安全性
-        clientBuilderConfiguration.setProtocol(Protocol.HTTPS);
 
-        // 创建 OSS 客户端实例
-        OSS ossClient = OSSClientBuilder.create()
-                // 以华东1（杭州）地域的外网访问域名为例，Endpoint填写为oss-cn-hangzhou.aliyuncs.com
-                .endpoint("oss-cn-hangzhou.aliyuncs.com")
-                // 从环境变量中获取访问凭证（需提前配置 OSS_ACCESS_KEY_ID 和 OSS_ACCESS_KEY_SECRET）
-                .credentialsProvider(CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider())
-                // 设置客户端配置
-                .clientConfiguration(clientBuilderConfiguration)
-                // 以华东1（杭州）地域为例，Region填写为cn-hangzhou
-                .region("cn-hangzhou")
+    @Value("${Aliyun.oss.endpoint}")
+    private String endpoint;
+
+    @Value("${Aliyun.oss.bucketName}")
+    private String bucketName;
+
+    @Value("${Aliyun.oss.region}")
+    private String region;
+
+    private OSS ossClient;
+
+    @PostConstruct
+    public void initClient() throws com.aliyuncs.exceptions.ClientException {
+        EnvironmentVariableCredentialsProvider credentialsProvider =
+                CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+
+        ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+        config.setSignatureVersion(SignVersion.V4);
+
+        this.ossClient = OSSClientBuilder.create()
+                .endpoint(endpoint)
+                .region(region)
+                .credentialsProvider(credentialsProvider)
                 .build();
 
-        try {
-            // 列出当前用户的所有 Bucket
-            List<Bucket> buckets = ossClient.listBuckets();
-            // 遍历打印每个 Bucket 的名称
-            for (Bucket bucket : buckets) {
-                System.out.println(bucket.getName());
-            }
-        } finally {
-            // 当OSSClient实例不再使用时，调用shutdown方法以释放资源
+        log.info("OSS 客户端初始化成功");
+    }
+
+    /**
+     * 通用文件上传方法
+     *
+     * @param file      Spring的MultipartFile对象，上传的文件
+     * @param directory 上传到OSS的目录，例如 "avatars/", "fault-images/"
+     * @return 返回上传成功后文件的公网访问URL
+     */
+    public String upload(MultipartFile file, String directory) throws IOException {
+
+        // 1. 生成唯一的文件名，避免覆盖
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String uniqueFileName = UUID.randomUUID() + fileExtension;
+
+        // 2. 拼接完整的文件路径
+        String objectName = directory + uniqueFileName;
+
+        // 3. 获取文件输入流
+        try (InputStream inputStream = file.getInputStream()) {
+
+            // 4. 创建上传Object的Metadata
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            // 5. 执行上传
+            ossClient.putObject(bucketName, objectName, inputStream, metadata);
+        }
+
+        // 6. 拼接并返回公网访问URL
+        String point = endpoint.substring("https://".length());
+        return "https://" + bucketName + "." + point + "/" + objectName;
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param objectName 完整的文件路径，如 "avatars/uuid-generated.jpg"
+     */
+    public void delete(String objectName) {
+        ossClient.deleteObject(bucketName, objectName);
+    }
+
+    @PreDestroy
+    public void destroyClient() {
+        if (ossClient != null) {
             ossClient.shutdown();
+            log.info("OSS 客户端已关闭");
         }
     }
 }
