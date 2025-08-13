@@ -1,5 +1,6 @@
 package com.trick.backend.controller.admin;
 
+import com.trick.backend.common.aop.LogRecord;
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
 import com.trick.backend.model.dto.ChargingPileAddAndUpdateDTO;
@@ -27,18 +28,33 @@ public class ChargingPileController {
         return Result.success(chargingPileService.getChargingPileById(id));
     }
 
+    @LogRecord(
+            module = "充电桩管理",
+            type = "新增充电桩",
+            description = "'添加了一个充电桩，编号为：'+ #chargingAddPileDTO.pileNo"
+    )
     @PostMapping()
     Result<?> addChargingPile(@RequestBody ChargingPileAddAndUpdateDTO chargingAddPileDTO) {
         chargingPileService.addChargingPile(chargingAddPileDTO);
         return Result.success();
     }
 
+    @LogRecord(
+            module = "充电桩管理",
+            type = "修改充电桩",
+            description = "'修改了充电桩ID为：'+ #id + ' 的信息'"
+    )
     @PutMapping("/{id}")
     Result<?> updateChargingPile(@PathVariable Integer id, @RequestBody ChargingPileAddAndUpdateDTO chargingUpdatePileDTO) {
         chargingPileService.updateChargingPile(id, chargingUpdatePileDTO);
         return Result.success();
     }
 
+    @LogRecord(
+            module = "充电桩管理",
+            type = "删除充电桩",
+            description = "'删除了一个充电桩，ID为：'+ #id"
+    )
     @DeleteMapping("/{id}")
     Result<?> deleteChargingPile(@PathVariable Integer id) {
         chargingPileService.deleteChargingPile(id);

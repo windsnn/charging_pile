@@ -21,7 +21,6 @@ public class OperationLog {
     private String requestMethod;
     private String requestParams;
     private String ipAddress;
-    private String ipLocation;
     private Integer executionTime;
     private Integer status;
     private String errorMsg;

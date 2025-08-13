@@ -5,5 +5,13 @@
 
 <mapper namespace="com.trick.backend.mapper.OperationLogMapper">
 
+    <insert id="addOperationLog">
+        insert into operation_log(operator_id, operator_name, operation_module, operation_type, operation_desc,
+                                  request_uri, request_method, request_params, ip_address, execution_time,
+                                  status, error_msg)
+        values (#{operatorId}, #{operatorName}, #{operationModule}, #{operationType}, #{operationDesc},
+                #{requestUri}, #{requestMethod}, #{requestParams}, #{ipAddress}, #{executionTime},
+                #{status}, #{errorMsg})
+    </insert>
 
 </mapper>

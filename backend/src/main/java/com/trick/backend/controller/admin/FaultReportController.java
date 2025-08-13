@@ -1,5 +1,6 @@
 package com.trick.backend.controller.admin;
 
+import com.trick.backend.common.aop.LogRecord;
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.common.result.Result;
 import com.trick.backend.model.dto.ChargingPileQueryDTO;
@@ -23,6 +24,11 @@ public class FaultReportController {
         return Result.success(faultReportService.getFaultReportsByPage(queryDTO));
     }
 
+    @LogRecord(
+            module = "维修记录管理",
+            type = "修改维修记录状态",
+            description = "'修改了维修记录，记录ID为：'+ #id"
+    )
     @PutMapping("{id}")
     Result<?> updateFaultReport(@PathVariable Integer id, @RequestBody FaultReportUpdateDTO updateDTO) {
         faultReportService.updateFaultReport(id, updateDTO);

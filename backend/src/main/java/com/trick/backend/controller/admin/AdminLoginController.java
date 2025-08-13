@@ -1,5 +1,6 @@
 package com.trick.backend.controller.admin;
 
+import com.trick.backend.common.aop.LogRecord;
 import com.trick.backend.common.result.Result;
 import com.trick.backend.model.dto.LoginDTO;
 import com.trick.backend.service.LoginService;
