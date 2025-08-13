@@ -1,6 +1,7 @@
 package com.trick.backend.controller.wx;
 
 import com.trick.backend.common.result.Result;
+import com.trick.backend.model.dto.LoginDTO;
 import com.trick.backend.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,11 @@ public class WxLoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public Result<Map<String, String>> login(@RequestParam String code) throws Exception {
-        String token = loginService.loginUser(code);
+    public Result<Map<String, String>> login(@RequestBody LoginDTO dto) throws Exception {
+        String token = loginService.loginUser(dto.getCode());
 
         Map<String, String> params = new HashMap<>();
-        params.put("User-Token", token);
+        params.put("token", token);
 
         return Result.success(params);
     }

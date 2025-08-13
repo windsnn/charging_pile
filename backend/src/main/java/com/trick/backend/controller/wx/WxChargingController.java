@@ -25,7 +25,7 @@ public class WxChargingController {
     @PostMapping("/start")
     public Result<Map<String, String>> startCharging(@RequestBody ChargingDTO chargingDTO) {
         // token获取UserId
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         String orderId = chargingService.startCharging(userId, chargingDTO);
 
@@ -38,7 +38,7 @@ public class WxChargingController {
     @PostMapping("/stop")
     public Result<Map<String, String>> stopCharging(@RequestBody ChargingDTO chargingDTO) {
         // token获取UserId
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         String orderId = chargingService.stopChargingByUser(userId, chargingDTO);
 
@@ -51,7 +51,7 @@ public class WxChargingController {
     @GetMapping("/ongoing")
     public Result<List<ChargingOrderVO>> ongoingCharging() {
         // token获取UserId
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         return Result.success(chargingOrderService.getOngoing(userId));
     }

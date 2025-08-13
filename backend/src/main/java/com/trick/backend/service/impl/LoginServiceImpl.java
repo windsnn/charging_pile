@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trick.backend.common.exception.BusinessException;
 import com.trick.backend.common.result.ResultCode;
 import com.trick.backend.common.utils.JwtUtil;
+import com.trick.backend.mapper.LoginMapper;
+import com.trick.backend.model.dto.LoginDTO;
 import com.trick.backend.model.dto.UserAddAndUpdateDTO;
+import com.trick.backend.model.pojo.Admin;
 import com.trick.backend.service.LoginService;
 import com.trick.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +40,19 @@ public class LoginServiceImpl implements LoginService {
     private RestTemplate restTemplate;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private LoginMapper loginMapper;
 
     // 如果有 Redis，可以注入缓存 session_key
     // @Autowired
     // private RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * 微信用户登录
+     *
+     * @param code 前段获取的微信登录code
+     * @return token
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String loginUser(String code) throws JsonProcessingException {
@@ -87,7 +98,36 @@ public class LoginServiceImpl implements LoginService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);
         claims.put("openid", openid);
+        claims.put("role", "user");
 
         return jwtUtil.getToken(claims);
+    }
+
+
+    @Override
+    public Map<String, String> loginAdmin(LoginDTO loginDTO) {
+        // 根据用户名查询用户
+        Admin admin = loginMapper.getAdminByUsername(loginDTO.getUsername());
+        if (admin == null) {
+            throw new BusinessException("没有该用户");
+        }
+
+        // 验证密码是否正确（可优化使用加密方式）
+        if (!admin.getPassword().equals(loginDTO.getPassword())) {
+            throw new BusinessException("密码错误");
+        }
+
+        //获取adminToken
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", admin.getId());
+        claims.put("username", admin.getUsername());
+        claims.put("role", "admin");
+
+        //封装为map
+        String token = jwtUtil.getToken(claims);
+        Map<String, String> result = new HashMap<>();
+        result.put("token", token);
+
+        return result;
     }
 }

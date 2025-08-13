@@ -23,13 +23,13 @@ import java.util.UUID;
 @Component
 public class AliyunOssUtil {
 
-    @Value("${Aliyun.oss.endpoint}")
+    @Value("${aliyun.oss.endpoint}")
     private String endpoint;
 
-    @Value("${Aliyun.oss.bucketName}")
+    @Value("${aliyun.oss.bucketName}")
     private String bucketName;
 
-    @Value("${Aliyun.oss.region}")
+    @Value("${aliyun.oss.region}")
     private String region;
 
     private OSS ossClient;

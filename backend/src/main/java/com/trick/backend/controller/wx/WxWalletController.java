@@ -25,7 +25,7 @@ public class WxWalletController {
     @GetMapping
     public Result<Map<String, BigDecimal>> getWallet() {
         // token获取id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
         BigDecimal balance = userService.getWallet(userId);
 
         Map<String, BigDecimal> map = new HashMap<>();
@@ -39,7 +39,7 @@ public class WxWalletController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         // token获取id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         return Result.success(transactionLogService.getPagedTransactions(userId, pageNum, pageSize));
     }
@@ -47,7 +47,7 @@ public class WxWalletController {
     @PostMapping("/recharge")
     public Result<?> recharge(@RequestBody RechargeDTO rechargeDTO) {
         // token获取id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         transactionLogService.recharge(userId, rechargeDTO.getAmount());
         return Result.success();

@@ -29,7 +29,7 @@ public class FilesUploadController {
             @RequestParam String type) {
 
         // token获取userId
-        int userId = (int) ThreadLocalUtil.getUserContext().get("id");
+        int userId = (int) ThreadLocalUtil.getContext().get("id");
 
         if (file.isEmpty()) {
             throw new BusinessException("上传文件不能为空");

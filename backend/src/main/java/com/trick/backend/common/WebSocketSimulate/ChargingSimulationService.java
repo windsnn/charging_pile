@@ -20,11 +20,11 @@ public class ChargingSimulationService {
     // 用于从外部停止模拟任务的标志位
     private static final Map<String, Boolean> stopFlags = new ConcurrentHashMap<>();
 
-    @Autowired
-    private WebSocketServer webSocketServer;
     @Lazy
     @Autowired
     private ChargingService chargingService;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 开始一个异步的充电模拟任务

@@ -20,7 +20,7 @@ public class WxFaultReportController {
     //用户提交故障报告
     public Result<?> report(@RequestBody FaultReportAddDTO dto) {
         // token获取UserId
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
         dto.setUserId(userId);
 
         faultReportService.addFaultReport(dto);
@@ -34,7 +34,7 @@ public class WxFaultReportController {
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         // token获取UserId
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         return Result.success(faultReportService.getWxFaultReports(userId, pageNum, pageSize));
     }

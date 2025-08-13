@@ -11,14 +11,15 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.Map;
 
 @Component
-public class JwtInterceptor implements HandlerInterceptor {
+public class AdminAuthInterceptor implements HandlerInterceptor {
     @Autowired
     private JwtUtil jwtUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取令牌
-        String token = request.getHeader("User-Token");
+        String token = request.getHeader("token");
+        System.out.println(token);
 
         //判断令牌是否存在
         if (token == null || token.isEmpty()) {
@@ -29,8 +30,15 @@ public class JwtInterceptor implements HandlerInterceptor {
         //判断令牌是否有效
         try {
             Map<String, Object> parseToken = jwtUtil.parseToken(token);
-            //如果有效，存入User上下文
-            ThreadLocalUtil.setUserContext(parseToken);
+            String role = (String) parseToken.get("role");
+            System.out.println(role);
+            if (!"admin".equals(role)) {
+                // 如果Token不是admin，拒绝访问
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
+            }
+
+            ThreadLocalUtil.setContext(parseToken);
             return true;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -22,7 +22,7 @@ public class WxUserController {
     // 获取user信息
     public Result<WxUserProfileVO> getUserProfile() {
         //获取token id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         return Result.success(userService.getUserProfileById(userId));
     }
@@ -31,7 +31,7 @@ public class WxUserController {
     @PutMapping
     public Result<?> updateUserProfile(@RequestBody UserAddAndUpdateDTO userAddAndUpdateDTO) {
         //获取token id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         userAddAndUpdateDTO.setId(userId);
         userService.updateUser(userAddAndUpdateDTO);

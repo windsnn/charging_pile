@@ -23,7 +23,7 @@ public class WxChargingOrderController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         //获取token id
-        Integer userId = (Integer) ThreadLocalUtil.getUserContext().get("id");
+        Integer userId = (Integer) ThreadLocalUtil.getContext().get("id");
 
         return Result.success(orderService.getPagedOrder(userId, pageNum, pageSize));
     }

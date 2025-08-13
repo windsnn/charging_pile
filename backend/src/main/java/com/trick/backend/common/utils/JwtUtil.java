@@ -10,7 +10,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    @Value("${Jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
     //获取一个时间限制为1天的token

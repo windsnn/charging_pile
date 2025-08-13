@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 全局默认异常处理（兜底）
+     * 全局默认异常处理
      */
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e) {
