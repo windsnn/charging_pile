@@ -12,6 +12,8 @@ import com.trick.backend.model.vo.WxUserProfileVO;
 import com.trick.backend.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
 
     //返回微信个人中心User信息
     @Override
+    @Cacheable(value = "user", key = "#userId")
     public WxUserProfileVO getUserProfileById(Integer userId) {
         WxUserProfileVO wxUserProfileVO = new WxUserProfileVO();
         User user = getUser(userId);
@@ -64,11 +67,13 @@ public class UserServiceImpl implements UserService {
     //微信用户注册
     @Override
     public Integer addUser(UserAddAndUpdateDTO dto) {
-        return userMapper.addUser(dto);
+        userMapper.addUser(dto);
+        return dto.getId();
     }
 
     //微信用户数据更新
     @Override
+    @CacheEvict(value = "user", key = "#userAddAndUpdateDTO.id")
     public void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO) {
         userMapper.updateUser(userAddAndUpdateDTO);
     }
@@ -91,5 +96,5 @@ public class UserServiceImpl implements UserService {
     private User getUser(Integer id) {
         return userMapper.getUserById(id);
     }
-    
+
 }

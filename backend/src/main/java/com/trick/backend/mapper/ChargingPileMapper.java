@@ -25,7 +25,6 @@ public interface ChargingPileMapper {
     //根据ID删除充电桩数据
     void deleteCharging(Integer id);
 
-    //获取距离10公里内的充电桩，最多10个
-    List<ChargingPile> getNearbyByStraightDistance(Double latitude, Double longitude, Double maxStraightDistanceInMeters, Integer maxPiles);
-
+    //根据ID列表，批量从数据库查询充电桩的完整信息
+    List<ChargingPile> findByIds(List<Integer> ids);
 }

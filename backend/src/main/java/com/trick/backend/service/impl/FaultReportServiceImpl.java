@@ -16,6 +16,7 @@ import com.trick.backend.model.pojo.FaultReport;
 import com.trick.backend.model.vo.FaultReportVO;
 import com.trick.backend.service.FaultReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

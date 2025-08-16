@@ -21,7 +21,7 @@ public interface UserMapper {
     Integer getUserByOpenId(String openid);
 
     //添加微信用户 回显ID
-    Integer addUser(UserAddAndUpdateDTO dto);
+    void addUser(UserAddAndUpdateDTO dto);
 
     //更新用户数据
     //目前随意设置手机号
