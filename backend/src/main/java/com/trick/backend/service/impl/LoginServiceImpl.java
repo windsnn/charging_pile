@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trick.backend.common.exception.BusinessException;
-import com.trick.backend.common.result.ResultCode;
 import com.trick.backend.common.utils.JwtUtil;
 import com.trick.backend.mapper.LoginMapper;
 import com.trick.backend.model.dto.LoginDTO;
@@ -15,6 +14,7 @@ import com.trick.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -22,16 +22,17 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 public class LoginServiceImpl implements LoginService {
 
+    private static final String WX_SESSION_KEY_PREFIX = "wx:sessionkey:";
     @Value("${wx.appid}")
     private String appid;
     @Value("${wx.secret}")
     private String secret;
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -42,10 +43,8 @@ public class LoginServiceImpl implements LoginService {
     private ObjectMapper objectMapper;
     @Autowired
     private LoginMapper loginMapper;
-
-    // 如果有 Redis，可以注入缓存 session_key
-    // @Autowired
-    // private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> stringRedisTemplate;
 
     /**
      * 微信用户登录
@@ -75,8 +74,8 @@ public class LoginServiceImpl implements LoginService {
         String openid = jsonNode.get("openid").asText(null);
         String sessionKey = jsonNode.get("session_key").asText(null);
 
-        if (openid == null) {
-            throw new BusinessException(1001, "微信登录失败：未获取到openid");
+        if (openid == null || sessionKey == null) {
+            throw new BusinessException(1001, "微信登录失败：未获取到openid或session_key");
         }
 
         // 2. 创建或更新用户，并生成 token
@@ -92,8 +91,9 @@ public class LoginServiceImpl implements LoginService {
             log.info("新用户注册成功: openid={}", openid);
         }
 
-        // 如果需要缓存 session_key 以便后续解密手机号等
-        // redisTemplate.opsForValue().set("wx:sessionKey:" + openid, sessionKey, 2, TimeUnit.HOURS);
+        String redisKey = WX_SESSION_KEY_PREFIX + id;
+        stringRedisTemplate.opsForValue().set(redisKey, sessionKey, 7, TimeUnit.DAYS); // 存7天
+        log.info("【Redis】已缓存 userId: {} 的 session_key", id);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);

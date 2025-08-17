@@ -21,4 +21,7 @@ public class UserAddAndUpdateDTO {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
+    private String encryptedDate;
+    private String iv;
+
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.trick.backend.common.aop.LogRecord;
 import com.trick.backend.common.result.PageResult;
 import com.trick.backend.mapper.ChargingPileMapper;
 import com.trick.backend.model.dto.ChargingPileAddAndUpdateDTO;
@@ -45,7 +44,7 @@ public class ChargingPileServiceImpl implements ChargingPileService {
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     //分页条件查询
     @Override
@@ -110,7 +109,7 @@ public class ChargingPileServiceImpl implements ChargingPileService {
     public void deleteChargingPile(Integer id) {
         chargingPileMapper.deleteCharging(id);
         // 删除该充电桩的 Redis GEO
-        redisTemplate.opsForGeo().remove(PILE_GEO_KEY, id);
+        redisTemplate.opsForGeo().remove(PILE_GEO_KEY, String.valueOf(id));
     }
 
     //获取距离当前位置10公里以内的充电桩
@@ -122,7 +121,7 @@ public class ChargingPileServiceImpl implements ChargingPileService {
         int maxCandidates = 10; // 最多找10个候选桩
 
         // 使用 Redis GEO 查询10公里内的候选充电桩，按距离升序排序，最多返回10个
-        GeoOperations<String, Object> geoOps = redisTemplate.opsForGeo();
+        GeoOperations<String, String> geoOps = redisTemplate.opsForGeo();
         Point userLocation = new Point(longitude, latitude);
         Distance radius = new Distance(maxStraightDistanceInMeters / 1000, Metrics.KILOMETERS);
 
@@ -132,14 +131,14 @@ public class ChargingPileServiceImpl implements ChargingPileService {
                 .limit(maxCandidates); // 限制返回数量
 
         // 执行GEORADIUS查询
-        GeoResults<RedisGeoCommands.GeoLocation<Object>> geoResults = geoOps.radius(PILE_GEO_KEY, new Circle(userLocation, radius), args);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> geoResults = geoOps.radius(PILE_GEO_KEY, new Circle(userLocation, radius), args);
         if (geoResults == null || geoResults.getContent().isEmpty()) {
             return Collections.emptyList(); // 附近没有充电桩
         }
 
         // 提取充电桩ID列表
         List<Integer> pileIds = geoResults.getContent().stream()
-                .map(result -> Integer.valueOf((String) result.getContent().getName()))
+                .map(result -> Integer.valueOf(result.getContent().getName()))
                 .collect(Collectors.toList());
 
 
@@ -154,8 +153,8 @@ public class ChargingPileServiceImpl implements ChargingPileService {
 
         // 调用腾讯地图 API 获取道路距离
         List<ChargingPileVO> candidates = new ArrayList<>();
-        for (GeoResult<RedisGeoCommands.GeoLocation<Object>> result : geoResults.getContent()) {
-            Integer pileId = Integer.valueOf((String) result.getContent().getName());
+        for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : geoResults.getContent()) {
+            Integer pileId = Integer.valueOf(result.getContent().getName());
             ChargingPile pile = pileMap.get(pileId);
 
             if (pile != null) {

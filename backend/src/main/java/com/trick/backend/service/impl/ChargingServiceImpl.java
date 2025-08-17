@@ -15,6 +15,8 @@ import com.trick.backend.model.pojo.TransactionLog;
 import com.trick.backend.model.vo.ChargingPileVO;
 import com.trick.backend.service.ChargingPileService;
 import com.trick.backend.service.ChargingService;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChargingServiceImpl implements ChargingService {
@@ -38,43 +41,66 @@ public class ChargingServiceImpl implements ChargingService {
     private ChargingOrderMapper orderMapper;
     @Autowired
     private TransactionLogMapper logMapper;
+    @Autowired
+    private RedissonClient redissonClient;
 
     // 核心业务（充电逻辑）
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String startCharging(Integer userId, ChargingDTO chargingDTO) {
-        Integer id = chargingDTO.getPileId();
-        ChargingPileVO pile = chargingPileService.getChargingPileById(id);
+        Integer pileId = chargingDTO.getPileId();
+        RLock lock = redissonClient.getLock("lock:pile:" + pileId);
+        boolean locked;
 
-        if (pile == null || pile.getStatus() != 0) {
-            throw new BusinessException("充电桩不存在或正忙！");
+        // 尝试获取锁，最多等待10秒，引入看门狗机制
+        try {
+            locked = lock.tryLock(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new BusinessException("操作频繁，请稍后再试");
         }
 
-        BigDecimal balance = userMapper.getWallet(userId);
-        if (balance.compareTo(new BigDecimal("10.00")) < 0) {
-            throw new BusinessException("余额不足10元，请充值后再开始充电！");
+        if (locked) {
+            try {
+                ChargingPileVO pile = chargingPileService.getChargingPileById(pileId);
+
+                if (pile == null || pile.getStatus() != 0) {
+                    throw new BusinessException("充电桩不存在或正忙！");
+                }
+
+                BigDecimal balance = userMapper.getWallet(userId);
+                if (balance.compareTo(new BigDecimal("10.00")) < 0) {
+                    throw new BusinessException("余额不足10元，请充值后再开始充电！");
+                }
+
+                // 更新充电桩状态为“充电中”
+                ChargingPileAddAndUpdateDTO dto = new ChargingPileAddAndUpdateDTO();
+                dto.setStatus(1); // 1-充电中
+                dto.setId(pileId);
+                pileMapper.updateChargingPile(dto);
+
+                // 创建订单
+                ChargingOrderAddDTO orderAddDTO = new ChargingOrderAddDTO();
+                String orderNo = UUID.randomUUID().toString().replace("-", "");
+                orderAddDTO.setOrderNo(orderNo);
+                orderAddDTO.setUserId(userId);
+                orderAddDTO.setPileId(pileId); //该id为充电桩id
+                orderAddDTO.setStartTime(LocalDateTime.now());
+                orderAddDTO.setStatus(0); // 0-进行中
+                orderMapper.addOrder(orderAddDTO);
+
+                // 异步启动充电模拟
+                simulationService.startSimulationCharging(orderNo, userId, balance, pile.getPowerRate(), pile.getPricePerKwh());
+                return orderNo;
+            } catch (BusinessException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lock.unlock(); // 释放锁
+            }
+        } else {
+            throw new BusinessException("操作频繁，请稍后再试！");
         }
 
-        // 更新充电桩状态为“充电中”
-        ChargingPileAddAndUpdateDTO dto = new ChargingPileAddAndUpdateDTO();
-        dto.setStatus(1); // 1-充电中
-        dto.setId(id);
-        pileMapper.updateChargingPile(dto);
-
-        // 创建订单
-        ChargingOrderAddDTO orderAddDTO = new ChargingOrderAddDTO();
-        String orderNo = UUID.randomUUID().toString().replace("-", "");
-        orderAddDTO.setOrderNo(orderNo);
-        orderAddDTO.setUserId(userId);
-        orderAddDTO.setPileId(id); //该id为充电桩id
-        orderAddDTO.setStartTime(LocalDateTime.now());
-        orderAddDTO.setStatus(0); // 0-进行中
-        orderMapper.addOrder(orderAddDTO);
-
-        // 异步启动充电模拟
-        simulationService.startSimulationCharging(orderNo, userId, balance, pile.getPowerRate(), pile.getPricePerKwh());
-
-        return orderNo;
     }
 
     //核心逻辑（用户主动结束充电）

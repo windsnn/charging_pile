@@ -3,6 +3,7 @@ package com.trick.backend.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.trick.backend.common.result.PageResult;
+import com.trick.backend.common.utils.WxPhoneDecryptUtil;
 import com.trick.backend.mapper.UserMapper;
 import com.trick.backend.model.dto.UserAddAndUpdateDTO;
 import com.trick.backend.model.dto.UserQueryDTO;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,8 +23,13 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final String WX_SESSION_KEY_PREFIX = "wx:sessionkey:";
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WxPhoneDecryptUtil wxPhoneDecryptUtil;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     //分页条件查询
     @Override
@@ -73,9 +80,18 @@ public class UserServiceImpl implements UserService {
 
     //微信用户数据更新
     @Override
-    @CacheEvict(value = "user", key = "#userAddAndUpdateDTO.id")
-    public void updateUser(UserAddAndUpdateDTO userAddAndUpdateDTO) {
-        userMapper.updateUser(userAddAndUpdateDTO);
+    @CacheEvict(value = "user", key = "#dto.id")
+    public void updateUser(UserAddAndUpdateDTO dto) {
+        String encryptedDate = dto.getEncryptedDate();
+        String iv = dto.getIv();
+
+        if (encryptedDate != null && iv != null) {
+            String sessionKey = redisTemplate.opsForValue().get(WX_SESSION_KEY_PREFIX + dto.getId());
+            String phone = wxPhoneDecryptUtil.decryptPhoneNumber(encryptedDate, sessionKey, iv);
+            dto.setPhone(phone);
+        }
+        System.out.println(dto.getPhone());
+        userMapper.updateUser(dto);
     }
 
     //获取个人余额
